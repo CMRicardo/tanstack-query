@@ -1,11 +1,16 @@
 import { githubApi } from "../../api";
 import { sleep } from "../../helpers";
-import { GitHubIssue } from "../interfaces";
+import { GitHubIssue, State } from "../interfaces";
 
-export const getIssues = async (): Promise<GitHubIssue[]> => {
+export const getIssues = async (state: State): Promise<GitHubIssue[]> => {
   await sleep(1500);
-  // With axios
-  const { data } = await githubApi.get<GitHubIssue[]>("/issues");
+  const params = new URLSearchParams();
+
+  if (state !== State.All) {
+    params.append("state", state);
+  }
+
+  const { data } = await githubApi.get<GitHubIssue[]>("/issues", { params });
 
   return data;
 };
